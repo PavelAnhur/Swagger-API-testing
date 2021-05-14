@@ -1,0 +1,2 @@
+com/epam/api/SwaggerAPITests.java
+ com.epam.api.SwaggerAPITests
