@@ -30,7 +30,7 @@ public class GetQueryTest extends CommonConditions {
                                       .GET()
                                       .build();
         try {
-            File file = new File(String.format("%s/%s", getResponseBodyPath(), responseFile));
+            File file = new File(format("%s/%s", getResponseBodyPath(), responseFile));
             boolean isDeleted;
             if (file.exists()) {
                 isDeleted = file.delete();

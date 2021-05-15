@@ -27,13 +27,13 @@ public class PostQueryTest extends CommonConditions {
         try {
             HttpClient client = HttpClient.newHttpClient();
             HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(format("%s%s", getBaseUrl(), QUERY_END_POINT)))
-                .header(HEADER_PARAM_NAME, HEADER_PARAM_VALUE)
-                .POST(HttpRequest.BodyPublishers.ofFile(
-                    Path.of(format(getRequestBodyPath(), fileName))))
-                .build();
+                                          .uri(URI.create(format("%s%s", getBaseUrl(), QUERY_END_POINT)))
+                                          .header(HEADER_PARAM_NAME, HEADER_PARAM_VALUE)
+                                          .POST(HttpRequest.BodyPublishers.ofFile(
+                                                  Path.of(format(getRequestBodyPath(), fileName))))
+                                          .build();
             HttpResponse<String> response = client
-                 .send(request, HttpResponse.BodyHandlers.ofString());
+                                                    .send(request, HttpResponse.BodyHandlers.ofString());
 
             Assert.assertEquals(response.statusCode(), statusCode, getInvalidStatusCodeMessage());
         } catch (InterruptedException | IOException e) {
@@ -44,9 +44,9 @@ public class PostQueryTest extends CommonConditions {
     @DataProvider
     public Object[][] dataForQuery() {
         return new Object[][]{
-            {REQUEST_BODY_INVALID, StatusCode.SERVER_ERROR_500.getValue()},
-            {REQUEST_BODY_EMPTY, StatusCode.SERVER_ERROR_500.getValue()},
-            {REQUEST_BODY_VALID, StatusCode.OK_200.getValue()}
+                {REQUEST_BODY_INVALID, StatusCode.SERVER_ERROR_500.getValue()},
+                {REQUEST_BODY_EMPTY, StatusCode.SERVER_ERROR_500.getValue()},
+                {REQUEST_BODY_VALID, StatusCode.OK_200.getValue()}
         };
     }
 }

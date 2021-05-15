@@ -11,6 +11,8 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
+import static java.lang.String.format;
+
 public class DeleteQueryTest extends CommonConditions {
     private static final String QUERY_END_POINT = "/user/";
 
@@ -18,7 +20,7 @@ public class DeleteQueryTest extends CommonConditions {
     public void swaggerDeleteQueryTest(final String userName, final int statusCode) {
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder(
-                URI.create(String.format("%s%s%s", getBaseUrl(), QUERY_END_POINT, userName)))
+                URI.create(format("%s%s%s", getBaseUrl(), QUERY_END_POINT, userName)))
                                       .DELETE()
                                       .build();
         try {
