@@ -16,7 +16,6 @@ import java.nio.file.Path;
 import static java.lang.String.format;
 
 public class GetQueryTest extends CommonConditions {
-
     private static final String QUERY_END_POINT = "/user/";
     private static final String RESPONSE_BODY_FILE_VALID = "get-query-valid.json";
     private static final String RESPONSE_BODY_FILE_INVALID = "get-query-invalid.json";
@@ -52,8 +51,8 @@ public class GetQueryTest extends CommonConditions {
     @DataProvider
     public Object[][] getQueryData() {
         return new Object[][]{
-                {"pavelanhur", StatusCode.OK_200.getValue(), RESPONSE_BODY_FILE_VALID},
-                {"asdfasdf", StatusCode.NOT_FOUND_404.getValue(), RESPONSE_BODY_FILE_INVALID}
+                {getValidUser(), StatusCode.OK_200.getValue(), RESPONSE_BODY_FILE_VALID},
+                {getInvalidUser(), StatusCode.NOT_FOUND_404.getValue(), RESPONSE_BODY_FILE_INVALID}
         };
     }
 }

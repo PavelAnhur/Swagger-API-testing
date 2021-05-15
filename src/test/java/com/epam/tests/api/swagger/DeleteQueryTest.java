@@ -35,8 +35,8 @@ public class DeleteQueryTest extends CommonConditions {
     @DataProvider
     public Object[][] deleteQueryData() {
         return new Object[][]{
-                {"pavelanhur", StatusCode.OK_200.getValue()},
-                {"asdfasdf", StatusCode.NOT_FOUND_404.getValue()}
+                {getValidUser(), StatusCode.OK_200.getValue()},
+                {getInvalidUser(), StatusCode.NOT_FOUND_404.getValue()}
         };
     }
 }
