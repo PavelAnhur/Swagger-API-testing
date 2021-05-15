@@ -13,6 +13,11 @@
                     <include name="swaggerGetQueryTest"/>
                 </methods>
             </class>
+            <class name="com.epam.tests.api.swagger.DeleteQueryTest">
+                <methods>
+                    <include name="swaggerDeleteQueryTest"/>
+                </methods>
+            </class>
         </classes>
     </test>
 </suite>
