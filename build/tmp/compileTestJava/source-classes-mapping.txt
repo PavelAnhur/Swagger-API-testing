@@ -1,2 +1,6 @@
-com/epam/api/SwaggerAPITests.java
- com.epam.api.SwaggerAPITests
+com/epam/tests/api/swagger/CommonConditions.java
+ com.epam.tests.api.swagger.CommonConditions
+com/epam/tests/api/swagger/PostQueryTest.java
+ com.epam.tests.api.swagger.PostQueryTest
+com/epam/tests/api/swagger/GetQueryTest.java
+ com.epam.tests.api.swagger.GetQueryTest

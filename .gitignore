@@ -1,3 +1,14 @@
+bin/**
+gen/**
+# project based files
+.idea/
+*.iml
+*.ipr
+*.iws
+.gradletasknamecache
+.gradle/
+build/
+bin/
 *.class
 *.log
 *.ctxt
@@ -9,7 +20,6 @@
 *.zip
 *.tar.gz
 *.rar
-*.iml
 *.apk
 *.exe
 hs_err_pid*

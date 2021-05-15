@@ -1,5 +1,0 @@
-ÆHeaders: java.net.http.HttpHeaders@255b01d7 { {:status=[200], access-control-allow-headers=[Content-Type, api_key, Authorization], access-control-allow-methods=[GET, POST, DELETE, PUT], access-control-allow-origin=[*], content-type=[application/json], date=[Fri, 14 May 2021 16:57:24 GMT], server=[Jetty(9.2.9.v20150224)]} }
-=Response body: {"code":200,"type":"unknown","message":"ok"}
-Status code: 200
-Version: HTTP_2
-9URI: https://petstore.swagger.io/v2/user/createWithList
