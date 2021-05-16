@@ -21,8 +21,8 @@ public class DeleteQueryTest extends CommonConditions {
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder(
                 URI.create(format("%s%s%s", getBaseUrl(), QUERY_END_POINT, userName)))
-                                      .DELETE()
-                                      .build();
+                .DELETE()
+                .build();
         try {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 

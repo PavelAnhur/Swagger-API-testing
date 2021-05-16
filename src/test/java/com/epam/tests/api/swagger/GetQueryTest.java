@@ -26,8 +26,8 @@ public class GetQueryTest extends CommonConditions {
         HttpClient client = HttpClient.newBuilder().build();
         HttpRequest request = HttpRequest.newBuilder(
                 URI.create(format("%s%s%s", getBaseUrl(), QUERY_END_POINT, userName)))
-                                      .GET()
-                                      .build();
+                .GET()
+                .build();
         try {
             File file = new File(format("%s/%s", getResponseBodyPath(), responseFile));
             boolean isDeleted;
