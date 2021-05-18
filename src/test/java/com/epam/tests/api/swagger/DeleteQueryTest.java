@@ -1,8 +1,9 @@
 package com.epam.tests.api.swagger;
 
-import com.epam.enums.StatusCode;
+import com.epam.data.provider.DeleteQueryData;
+import com.epam.tests.api.swagger.conditions.DeleteQueryConditions;
+import lombok.extern.slf4j.Slf4j;
 import org.testng.Assert;
-import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
@@ -13,14 +14,14 @@ import java.net.http.HttpResponse;
 
 import static java.lang.String.format;
 
-public class DeleteQueryTest extends CommonConditions {
-    private static final String QUERY_END_POINT = "/user/";
+@Slf4j
+public class DeleteQueryTest extends DeleteQueryConditions {
 
-    @Test(dataProvider = "deleteQueryData")
+    @Test(dataProvider = "deleteQueryData", dataProviderClass = DeleteQueryData.class)
     public void swaggerDeleteQueryTest(final String userName, final int statusCode) {
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder(
-                URI.create(format("%s%s%s", getBaseUrl(), QUERY_END_POINT, userName)))
+                URI.create(format("%s%s%s", getBaseUrl(), getQueryEndPoint(), userName)))
                 .DELETE()
                 .build();
         try {
@@ -28,15 +29,7 @@ public class DeleteQueryTest extends CommonConditions {
 
             Assert.assertEquals(response.statusCode(), statusCode, getInvalidStatusCodeMessage());
         } catch (IOException | InterruptedException e) {
-            getLogger().error(e.getMessage());
+            log.error(e.getMessage());
         }
-    }
-
-    @DataProvider
-    public Object[][] deleteQueryData() {
-        return new Object[][]{
-                {getValidUser(), StatusCode.OK_200.getValue()},
-                {getInvalidUser(), StatusCode.NOT_FOUND_404.getValue()}
-        };
     }
 }

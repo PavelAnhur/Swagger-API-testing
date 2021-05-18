@@ -1,8 +1,9 @@
 package com.epam.tests.api.swagger;
 
-import com.epam.enums.StatusCode;
+import com.epam.data.provider.GetQueryData;
+import com.epam.tests.api.swagger.conditions.GetQueryConditions;
+import lombok.extern.slf4j.Slf4j;
 import org.testng.Assert;
-import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import java.io.File;
@@ -15,17 +16,14 @@ import java.nio.file.Path;
 
 import static java.lang.String.format;
 
-public class GetQueryTest extends CommonConditions {
-    private static final String QUERY_END_POINT = "/user/";
-    private static final String RESPONSE_BODY_FILE_VALID = "get-query-valid.json";
-    private static final String RESPONSE_BODY_FILE_INVALID = "get-query-invalid.json";
+@Slf4j
+public class GetQueryTest extends GetQueryConditions {
 
-
-    @Test(dataProvider = "getQueryData")
+    @Test(dataProvider = "dataForTest", dataProviderClass = GetQueryData.class)
     public void swaggerGetQueryTest(final String userName, final int statusCode, final String responseFile) {
         HttpClient client = HttpClient.newBuilder().build();
         HttpRequest request = HttpRequest.newBuilder(
-                URI.create(format("%s%s%s", getBaseUrl(), QUERY_END_POINT, userName)))
+                URI.create(format("%s%s%s", getBaseUrl(), getQueryEndPoint(), userName)))
                 .GET()
                 .build();
         try {
@@ -33,9 +31,9 @@ public class GetQueryTest extends CommonConditions {
             boolean isDeleted;
             if (file.exists()) {
                 isDeleted = file.delete();
-                getLogger().debug("{} file is deleted: {}", file.getName(), isDeleted);
+                log.debug("{} file is deleted: {}", file.getName(), isDeleted);
             } else {
-                getLogger().debug("{} file doesn't exist", file.getName());
+                log.debug("{} file doesn't exist", file.getName());
             }
             HttpResponse<Path> response =
                     client.send(request, HttpResponse.BodyHandlers.ofFile(
@@ -44,15 +42,7 @@ public class GetQueryTest extends CommonConditions {
             Assert.assertEquals(response.statusCode(), statusCode, getInvalidStatusCodeMessage());
 
         } catch (IOException | InterruptedException e) {
-            getLogger().error(e.getMessage());
+            log.error(e.getMessage());
         }
-    }
-
-    @DataProvider
-    public Object[][] getQueryData() {
-        return new Object[][]{
-                {getValidUser(), StatusCode.OK_200.getValue(), RESPONSE_BODY_FILE_VALID},
-                {getInvalidUser(), StatusCode.NOT_FOUND_404.getValue(), RESPONSE_BODY_FILE_INVALID}
-        };
     }
 }

@@ -19,11 +19,6 @@
                     <include name="swaggerDeleteQueryTest"/>
                 </methods>
             </class>
-            <class name="com.epam.tests.api.swagger.PostQueryTestWithFactory">
-                <methods>
-                    <include name="swaggerPostQueryTestWithFactory"/>
-                </methods>
-            </class>
         </classes>
     </test>
 </suite>
