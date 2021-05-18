@@ -1,13 +1,11 @@
 package com.epam.tests.api.swagger;
 
-import com.epam.data.request.User;
 import com.epam.data.provider.DataProviderForTests;
+import com.epam.data.request.User;
 import com.epam.data.response.ResponseBody;
 import com.epam.enums.StatusCode;
 import com.epam.tests.api.swagger.conditions.GetQueryConditions;
-import com.epam.utils.JsonUtils;
 import com.google.gson.Gson;
-import com.jayway.jsonpath.JsonPath;
 import lombok.extern.slf4j.Slf4j;
 import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
@@ -25,10 +23,9 @@ public class GetQueryTest extends GetQueryConditions {
 
     @Test(dataProvider = "dataForGetTest", dataProviderClass = DataProviderForTests.class)
     public void swaggerGetQueryTest(final User user, final int statusCode) {
-        String userAsJson = JsonUtils.toJson(user);
-        String userName = JsonPath.parse(userAsJson).read("$.username").toString();
-        System.out.println("Username: " + userName);
-        HttpClient client = HttpClient.newBuilder().build();
+        String userName = user.getUsername();
+        log.info("Username: " + userName);
+        HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder(
                 URI.create(format("%s%s%s", getBaseUrl(), getQueryEndPoint(), userName)))
                                       .GET()
@@ -40,11 +37,7 @@ public class GetQueryTest extends GetQueryConditions {
                     client.send(request, HttpResponse.BodyHandlers.ofString());
             if (response.statusCode() == StatusCode.OK_200.getValue()) {
                 User responseBodyUser = new Gson().fromJson(response.body(), User.class);
-                softAssert.assertEquals(responseBodyUser.getUsername(), userName);
-                softAssert.assertEquals(responseBodyUser.getId(),
-                        Integer.parseInt(JsonPath.parse(userAsJson).read("$.id").toString()));
-                softAssert.assertEquals(responseBodyUser.getPhone(),
-                        JsonPath.parse(userAsJson).read("$.phone").toString());
+                softAssert.assertEquals(responseBodyUser, user);
             } else if (response.statusCode() == StatusCode.NOT_FOUND_404.getValue()) {
                 ResponseBody responseBody = new Gson().fromJson(response.body(), ResponseBody.class);
                 softAssert.assertEquals(responseBody.getCode(), getCodeFromResponseBody());

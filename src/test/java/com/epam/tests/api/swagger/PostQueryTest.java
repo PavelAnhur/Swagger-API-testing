@@ -31,7 +31,6 @@ public class PostQueryTest extends PostQueryConditions {
         } else {
             String usersAsJson = JsonUtils.toJson(users);
             requestBody = JsonPath.parse(usersAsJson).read("$.users").toString();
-            System.out.println("Request body: " + requestBody);
             log.info("Request body: " + requestBody);
         }
         try {
@@ -46,15 +45,13 @@ public class PostQueryTest extends PostQueryConditions {
             SoftAssert softAssert = new SoftAssert();
             ResponseBody responseBody = new Gson().fromJson(response.body(), ResponseBody.class);
             int responseBodyCode = responseBody.getCode();
-            System.out.println("Code from response body: " + responseBodyCode);
             String responseBodyMessage = responseBody.getMessage();
-            System.out.println("Message from response body: " + responseBodyMessage);
             if (response.statusCode() == StatusCode.OK_200.getValue()) {
                 softAssert.assertEquals(responseBodyMessage, getSuccessResponseMessage());
-                softAssert.assertEquals(responseBodyCode, getSuccessResponseCode());
+                softAssert.assertEquals(responseBodyCode, StatusCode.OK_200.getValue());
             } else if (response.statusCode() == StatusCode.SERVER_ERROR_500.getValue()) {
                 softAssert.assertEquals(responseBodyMessage, getErrorResponseMessage());
-                softAssert.assertEquals(responseBodyCode, getErrorResponseCode());
+                softAssert.assertEquals(responseBodyCode, StatusCode.SERVER_ERROR_500.getValue());
             } else {
                 log.warn(getQueryStatus());
             }

@@ -3,7 +3,7 @@ package com.epam.utils;
 import java.security.SecureRandom;
 
 public final class StringUtils {
-    private static final String REGEXP = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!@#$%^&*()_+-=";
+    private static final String REGEXP = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
     private static final SecureRandom RANDOM = new SecureRandom();
 
     private StringUtils() {

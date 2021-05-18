@@ -3,11 +3,12 @@ package com.epam.data.provider;
 import com.epam.data.request.User;
 import com.epam.data.request.Users;
 import com.epam.enums.StatusCode;
-import com.epam.utils.StringUtils;
 import org.testng.annotations.DataProvider;
 
 import java.util.Arrays;
 import java.util.Collections;
+
+import static com.epam.utils.StringUtils.getRandomString;
 
 public final class DataProviderForTests {
     private static final int LENGTH = 8;
@@ -20,17 +21,17 @@ public final class DataProviderForTests {
     )).build();
     private static final Users INVALID_USERS = Users.builder().users(Collections.singletonList(
             User.builder()
-                    .id(-1).username(StringUtils.getRandomString(LENGTH))
-                    .firstName(StringUtils.getRandomString(LENGTH))
-                    .lastName(StringUtils.getRandomString(LENGTH))
-                    .email(StringUtils.getRandomString(LENGTH) + "@gmail.com")
-                    .password(StringUtils.getRandomString(LENGTH))
-                    .phone(StringUtils.getRandomString(LENGTH))
+                    .id(-1).username(getRandomString(LENGTH))
+                    .firstName(getRandomString(LENGTH))
+                    .lastName(getRandomString(LENGTH))
+                    .email(getRandomString(LENGTH) + "@gmail.com")
+                    .password(getRandomString(LENGTH))
+                    .phone(getRandomString(LENGTH))
                     .userStatus(1).build()
     )).build();
     private static final Users NOT_ALL_FIELDS_USERS = Users.builder().users(Arrays.asList(
-            User.builder().id(2).firstName("Jhon").build(),
-            User.builder().userStatus(2).username("hhhhh").build()
+            User.builder().id(2).firstName(getRandomString(LENGTH)).build(),
+            User.builder().userStatus(2).username(getRandomString(LENGTH)).build()
     )).build();
 
     private DataProviderForTests() {
@@ -40,7 +41,6 @@ public final class DataProviderForTests {
     public static Object[][] getDataForPostQueryTest() {
         return new Object[][]{
                 {VALID_USERS, StatusCode.OK_200.getValue()},
-//                {INVALID_USERS, StatusCode.SERVER_ERROR_500.getValue()},
                 {NOT_ALL_FIELDS_USERS, StatusCode.OK_200.getValue()},
                 {EMPTY_USERS, StatusCode.SERVER_ERROR_500.getValue()}
         };
