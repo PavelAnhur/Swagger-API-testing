@@ -1,6 +1,6 @@
 package com.epam.tests.api.swagger;
 
-import com.epam.data.provider.DeleteQueryData;
+import com.epam.data.provider.DataProviderForTests;
 import com.epam.tests.api.swagger.conditions.DeleteQueryConditions;
 import lombok.extern.slf4j.Slf4j;
 import org.testng.Assert;
@@ -17,8 +17,9 @@ import static java.lang.String.format;
 @Slf4j
 public class DeleteQueryTest extends DeleteQueryConditions {
 
-    @Test(dataProvider = "deleteQueryData", dataProviderClass = DeleteQueryData.class)
+    @Test(dataProvider = "dataForDeleteTest", dataProviderClass = DataProviderForTests.class)
     public void swaggerDeleteQueryTest(final String userName, final int statusCode) {
+
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder(
                 URI.create(format("%s%s%s", getBaseUrl(), getQueryEndPoint(), userName)))

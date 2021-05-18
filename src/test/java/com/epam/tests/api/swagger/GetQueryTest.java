@@ -1,7 +1,10 @@
 package com.epam.tests.api.swagger;
 
-import com.epam.data.provider.GetQueryData;
+import com.epam.data.Users;
+import com.epam.data.provider.DataProviderForTests;
 import com.epam.tests.api.swagger.conditions.GetQueryConditions;
+import com.epam.utils.JsonUtils;
+import com.jayway.jsonpath.JsonPath;
 import lombok.extern.slf4j.Slf4j;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -19,8 +22,11 @@ import static java.lang.String.format;
 @Slf4j
 public class GetQueryTest extends GetQueryConditions {
 
-    @Test(dataProvider = "dataForTest", dataProviderClass = GetQueryData.class)
-    public void swaggerGetQueryTest(final String userName, final int statusCode, final String responseFile) {
+    @Test(dataProvider = "dataForGetTest", dataProviderClass = DataProviderForTests.class)
+    public void swaggerGetQueryTest(final Users users, final int statusCode, final String responseFile) {
+        String usersAsJson = JsonUtils.toJson(users);
+        String userName = JsonPath.parse(usersAsJson).read("$.users[0].username").toString();
+        System.out.println("Username: " + userName);
         HttpClient client = HttpClient.newBuilder().build();
         HttpRequest request = HttpRequest.newBuilder(
                 URI.create(format("%s%s%s", getBaseUrl(), getQueryEndPoint(), userName)))

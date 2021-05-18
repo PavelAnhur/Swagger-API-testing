@@ -1,1 +1,1 @@
-{"code":1,"type":"error","message":"User not found"}
+{"id":1,"username":"pavelanhur","firstName":"Pavel","lastName":"Anhur","email":"pavelanhur@gmail.com","password":"asdf1234","phone":"+375336235840","userStatus":1}

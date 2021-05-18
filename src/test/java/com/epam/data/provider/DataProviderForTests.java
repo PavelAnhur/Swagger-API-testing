@@ -9,20 +9,23 @@ import org.testng.annotations.DataProvider;
 import java.util.Arrays;
 import java.util.Collections;
 
+import static com.epam.tests.api.swagger.conditions.GetQueryConditions.getResponseBodyFileInvalid;
+import static com.epam.tests.api.swagger.conditions.GetQueryConditions.getResponseBodyFileValid;
+
 public final class DataProviderForTests {
     private DataProviderForTests() {
     }
 
     private static final int LENGTH = 8;
     private static final Users VALID_USERS = Users.builder().users(Arrays.asList(
-            User.builder().id(1).userName("pavelanhur").firstName("Pavel").lastName("Anhur")
+            User.builder().id(1).username("pavelanhur").firstName("Pavel").lastName("Anhur")
                     .email("pavelanhur@gmail.com").password("asdf1234").phone("+375336235840").userStatus(1).build(),
-            User.builder().id(2).userName("valeryanhur").firstName("Valery").lastName("Anhur")
+            User.builder().id(2).username("valeryanhur").firstName("Valery").lastName("Anhur")
                     .email("valeryaanhur@gmail.com").password("asdf1234").phone("+2342902523").userStatus(1).build()
     )).build();
     private static final Users INVALID_USERS = Users.builder().users(Collections.singletonList(
             User.builder()
-                    .id(-1).userName(StringUtils.getRandomString(LENGTH))
+                    .id(-1).username(StringUtils.getRandomString(LENGTH))
                     .firstName(StringUtils.getRandomString(LENGTH))
                     .lastName(StringUtils.getRandomString(LENGTH))
                     .email(StringUtils.getRandomString(LENGTH) + "@gmail.com")
@@ -34,12 +37,28 @@ public final class DataProviderForTests {
             User.builder().build()
     )).build();
 
-    @DataProvider(name = "dataForPostQuery")
-    public static Object[][] getDataForPostQuery() {
+    @DataProvider(name = "dataForPostTest")
+    public static Object[][] getDataForPostQueryTest() {
         return new Object[][]{
                 {VALID_USERS, StatusCode.OK_200.getValue()},
-                {INVALID_USERS, StatusCode.SERVER_ERROR_500.getValue()},
-                {EMPTY_USER, StatusCode.OK_200.getValue()}
+//                {INVALID_USERS, StatusCode.SERVER_ERROR_500.getValue()},
+                {EMPTY_USER, StatusCode.SERVER_ERROR_500.getValue()}
+        };
+    }
+
+    @DataProvider(name = "dataForGetTest")
+    public static Object[][] getDataForGetQueryTest() {
+        return new Object[][]{
+                {VALID_USERS, StatusCode.OK_200.getValue(), getResponseBodyFileValid()},
+                {INVALID_USERS, StatusCode.NOT_FOUND_404.getValue(), getResponseBodyFileInvalid()}
+        };
+    }
+
+    @DataProvider (name = "dataForDeleteTest")
+    public static Object[][] getDataForDeleteQueryTest() {
+        return new Object[][]{
+                {VALID_USERS, StatusCode.OK_200.getValue()},
+                {INVALID_USERS, StatusCode.NOT_FOUND_404.getValue()}
         };
     }
 }

@@ -3,7 +3,7 @@ package com.epam.tests.api.swagger;
 import com.epam.data.Users;
 import com.epam.data.provider.DataProviderForTests;
 import com.epam.tests.api.swagger.conditions.PostQueryConditions;
-import com.epam.utils.DataConverter;
+import com.epam.utils.JsonUtils;
 import com.jayway.jsonpath.JsonPath;
 import lombok.extern.slf4j.Slf4j;
 import org.testng.Assert;
@@ -20,9 +20,9 @@ import static java.lang.String.format;
 @Slf4j
 public class PostQueryTest extends PostQueryConditions {
 
-    @Test(dataProvider = "dataForPostQuery", dataProviderClass = DataProviderForTests.class)
+    @Test(dataProvider = "dataForPostTest", dataProviderClass = DataProviderForTests.class)
     public void swaggerPostQueryTest(final Users users, final int statusCode) {
-        String usersAsJson = new DataConverter().convertObjectToJson(users);
+        String usersAsJson = JsonUtils.toJson(users);
         String requestBody = JsonPath.parse(usersAsJson).read("$.users").toString();
         System.out.println("Request body: " + requestBody);
         log.info("Request body: " + requestBody);
