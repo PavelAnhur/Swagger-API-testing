@@ -10,7 +10,7 @@ public final class JsonUtils {
 
     public static String toJson(final Object object) {
         String json = new Gson().toJson(object);
-        log.debug("Json:{}", json);
+        log.info("Json: {}", json);
         return json;
     }
 }
