@@ -1,13 +1,16 @@
 package com.epam.tests.api.swagger;
 
-import com.epam.data.Users;
+import com.epam.data.request.Users;
 import com.epam.data.provider.DataProviderForTests;
+import com.epam.data.response.ResponseBody;
+import com.epam.enums.StatusCode;
 import com.epam.tests.api.swagger.conditions.PostQueryConditions;
 import com.epam.utils.JsonUtils;
+import com.google.gson.Gson;
 import com.jayway.jsonpath.JsonPath;
 import lombok.extern.slf4j.Slf4j;
-import org.testng.Assert;
 import org.testng.annotations.Test;
+import org.testng.asserts.SoftAssert;
 
 import java.io.IOException;
 import java.net.URI;
@@ -22,21 +25,41 @@ public class PostQueryTest extends PostQueryConditions {
 
     @Test(dataProvider = "dataForPostTest", dataProviderClass = DataProviderForTests.class)
     public void swaggerPostQueryTest(final Users users, final int statusCode) {
-        String usersAsJson = JsonUtils.toJson(users);
-        String requestBody = JsonPath.parse(usersAsJson).read("$.users").toString();
-        System.out.println("Request body: " + requestBody);
-        log.info("Request body: " + requestBody);
+        String requestBody;
+        if (users == null) {
+            requestBody = "{}";
+        } else {
+            String usersAsJson = JsonUtils.toJson(users);
+            requestBody = JsonPath.parse(usersAsJson).read("$.users").toString();
+            System.out.println("Request body: " + requestBody);
+            log.info("Request body: " + requestBody);
+        }
         try {
             HttpClient client = HttpClient.newHttpClient();
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(format("%s%s", getBaseUrl(), getQueryEndPoint())))
-                    .header(getHeaderParamName(), getHeaderParamValue())
-                    .POST(HttpRequest.BodyPublishers.ofString(requestBody))
-                    .build();
-            HttpResponse<String> response = client
-                    .send(request, HttpResponse.BodyHandlers.ofString());
+                                          .uri(URI.create(format("%s%s", getBaseUrl(), getQueryEndPoint())))
+                                          .header(getHeaderParamName(), getHeaderParamValue())
+                                          .POST(HttpRequest.BodyPublishers.ofString(requestBody))
+                                          .build();
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-            Assert.assertEquals(response.statusCode(), statusCode, getInvalidStatusCodeMessage());
+            SoftAssert softAssert = new SoftAssert();
+            ResponseBody responseBody = new Gson().fromJson(response.body(), ResponseBody.class);
+            int responseBodyCode = responseBody.getCode();
+            System.out.println("Code from response body: " + responseBodyCode);
+            String responseBodyMessage = responseBody.getMessage();
+            System.out.println("Message from response body: " + responseBodyMessage);
+            if (response.statusCode() == StatusCode.OK_200.getValue()) {
+                softAssert.assertEquals(responseBodyMessage, getSuccessResponseMessage());
+                softAssert.assertEquals(responseBodyCode, getSuccessResponseCode());
+            } else if (response.statusCode() == StatusCode.SERVER_ERROR_500.getValue()) {
+                softAssert.assertEquals(responseBodyMessage, getErrorResponseMessage());
+                softAssert.assertEquals(responseBodyCode, getErrorResponseCode());
+            } else {
+                log.warn(getQueryStatus());
+            }
+            softAssert.assertEquals(response.statusCode(), statusCode, getInvalidStatusCodeMessage());
+            softAssert.assertAll(getInvalidResponseBodyMessage());
         } catch (InterruptedException | IOException e) {
             log.error(e.getMessage());
         }
