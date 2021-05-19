@@ -1,11 +1,13 @@
 package com.epam.tests.api.swagger;
 
-import com.epam.data.provider.DataProviderForTests;
 import com.epam.data.request.User;
+import com.epam.data.provider.DataProviderForTests;
 import com.epam.data.response.ResponseBody;
 import com.epam.enums.StatusCode;
-import com.epam.tests.api.swagger.conditions.GetQueryConditions;
+import com.epam.tests.api.swagger.conditions.DeleteQueryConditions;
+import com.epam.utils.JsonUtils;
 import com.google.gson.Gson;
+import com.jayway.jsonpath.JsonPath;
 import lombok.extern.slf4j.Slf4j;
 import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
@@ -19,29 +21,27 @@ import java.net.http.HttpResponse;
 import static java.lang.String.format;
 
 @Slf4j
-public class GetQueryTest extends GetQueryConditions {
+public class DeleteQueryTest extends DeleteQueryConditions {
 
-    @Test(dataProvider = "dataForGetTest", dataProviderClass = DataProviderForTests.class)
-    public void swaggerGetQueryTest(final User user, final int statusCode) {
-        String userName = user.getUsername();
-        log.info("Username: " + userName);
+    @Test(dataProvider = "dataForDeleteTest", dataProviderClass = DataProviderForTests.class)
+    public void swaggerDeleteQueryTest(final User user, final int statusCode) {
+        String userAsJson = JsonUtils.toJson(user);
+        String userName = JsonPath.parse(userAsJson).read("$.username").toString();
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder(
                 URI.create(format("%s%s%s", getBaseUrl(), getQueryEndPoint(), userName)))
-                                      .GET()
+                                      .DELETE()
                                       .build();
 
         SoftAssert softAssert = new SoftAssert();
         try {
-            HttpResponse<String> response =
-                    client.send(request, HttpResponse.BodyHandlers.ofString());
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            ResponseBody responseBody = new Gson().fromJson(response.body(), ResponseBody.class);
             if (response.statusCode() == StatusCode.OK_200.getValue()) {
-                User responseBodyUser = new Gson().fromJson(response.body(), User.class);
-                softAssert.assertEquals(responseBodyUser, user);
+                softAssert.assertEquals(responseBody.getCode(), StatusCode.OK_200.getValue());
+                softAssert.assertEquals(responseBody.getMessage(), userName);
             } else if (response.statusCode() == StatusCode.NOT_FOUND_404.getValue()) {
-                ResponseBody responseBody = new Gson().fromJson(response.body(), ResponseBody.class);
-                softAssert.assertEquals(responseBody.getCode(), getCodeFromResponseBody());
-                softAssert.assertEquals(responseBody.getMessage(), getMessageFromResponseBody());
+                softAssert.assertEquals(responseBody, null);
             } else {
                 log.warn(getQueryStatus());
             }
