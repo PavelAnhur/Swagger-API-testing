@@ -3,12 +3,12 @@ package com.epam.tests.api.swagger;
 import com.epam.data.provider.DataProviderForTests;
 import com.epam.data.request.Users;
 import com.epam.data.response.ResponseBody;
-import com.epam.enums.StatusCode;
 import com.epam.tests.api.swagger.conditions.PostQueryConditions;
 import com.epam.utils.JsonUtils;
 import com.google.gson.Gson;
 import com.jayway.jsonpath.JsonPath;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.http.HttpStatus;
 import org.testng.annotations.Factory;
 import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
@@ -55,12 +55,12 @@ public class PostQueryTest extends PostQueryConditions {
             ResponseBody responseBody = new Gson().fromJson(response.body(), ResponseBody.class);
             int responseBodyCode = responseBody.getCode();
             String responseBodyMessage = responseBody.getMessage();
-            if (response.statusCode() == StatusCode.OK_200.getValue()) {
+            if (response.statusCode() == HttpStatus.SC_OK) {
                 softAssert.assertEquals(responseBodyMessage, getSuccessResponseMessage());
-                softAssert.assertEquals(responseBodyCode, StatusCode.OK_200.getValue());
-            } else if (response.statusCode() == StatusCode.SERVER_ERROR_500.getValue()) {
+                softAssert.assertEquals(responseBodyCode, HttpStatus.SC_OK);
+            } else if (response.statusCode() == HttpStatus.SC_INTERNAL_SERVER_ERROR) {
                 softAssert.assertEquals(responseBodyMessage, getErrorResponseMessage());
-                softAssert.assertEquals(responseBodyCode, StatusCode.SERVER_ERROR_500.getValue());
+                softAssert.assertEquals(responseBodyCode, HttpStatus.SC_INTERNAL_SERVER_ERROR);
             } else {
                 log.warn(getQueryStatus());
             }
