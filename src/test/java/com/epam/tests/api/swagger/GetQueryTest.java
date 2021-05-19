@@ -3,10 +3,10 @@ package com.epam.tests.api.swagger;
 import com.epam.data.provider.DataProviderForTests;
 import com.epam.data.request.User;
 import com.epam.data.response.ResponseBody;
-import com.epam.enums.StatusCode;
 import com.epam.tests.api.swagger.conditions.GetQueryConditions;
 import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.http.HttpStatus;
 import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
 
@@ -35,10 +35,10 @@ public class GetQueryTest extends GetQueryConditions {
         try {
             HttpResponse<String> response =
                     client.send(request, HttpResponse.BodyHandlers.ofString());
-            if (response.statusCode() == StatusCode.OK_200.getValue()) {
+            if (response.statusCode() == HttpStatus.SC_OK) {
                 User responseBodyUser = new Gson().fromJson(response.body(), User.class);
                 softAssert.assertEquals(responseBodyUser, user);
-            } else if (response.statusCode() == StatusCode.NOT_FOUND_404.getValue()) {
+            } else if (response.statusCode() == HttpStatus.SC_NOT_FOUND) {
                 ResponseBody responseBody = new Gson().fromJson(response.body(), ResponseBody.class);
                 softAssert.assertEquals(responseBody.getCode(), getCodeFromResponseBody());
                 softAssert.assertEquals(responseBody.getMessage(), getMessageFromResponseBody());

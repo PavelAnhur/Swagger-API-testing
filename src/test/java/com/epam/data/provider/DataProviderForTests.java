@@ -2,7 +2,7 @@ package com.epam.data.provider;
 
 import com.epam.data.request.User;
 import com.epam.data.request.Users;
-import com.epam.enums.StatusCode;
+import org.apache.http.HttpStatus;
 import org.testng.annotations.DataProvider;
 
 import java.util.Arrays;
@@ -40,25 +40,25 @@ public final class DataProviderForTests {
     @DataProvider(name = "dataForPostTest")
     public static Object[][] getDataForPostQueryTest() {
         return new Object[][]{
-                {VALID_USERS, StatusCode.OK_200.getValue()},
-                {NOT_ALL_FIELDS_USERS, StatusCode.OK_200.getValue()},
-                {EMPTY_USERS, StatusCode.SERVER_ERROR_500.getValue()}
+                {VALID_USERS, HttpStatus.SC_OK},
+                {NOT_ALL_FIELDS_USERS, HttpStatus.SC_OK},
+                {EMPTY_USERS, HttpStatus.SC_INTERNAL_SERVER_ERROR}
         };
     }
 
     @DataProvider(name = "dataForGetTest")
     public static Object[][] getDataForGetQueryTest() {
         return new Object[][]{
-                {getUser(VALID_USERS, 0), StatusCode.OK_200.getValue()},
-                {getUser(INVALID_USERS, 1), StatusCode.NOT_FOUND_404.getValue()}
+                {getUser(VALID_USERS, 0), HttpStatus.SC_OK},
+                {getUser(INVALID_USERS, 1), HttpStatus.SC_NOT_FOUND}
         };
     }
 
     @DataProvider(name = "dataForDeleteTest")
     public static Object[][] getDataForDeleteQueryTest() {
         return new Object[][]{
-                {getUser(VALID_USERS, 1), StatusCode.OK_200.getValue()},
-                {getUser(INVALID_USERS, 1), StatusCode.NOT_FOUND_404.getValue()}
+                {getUser(VALID_USERS, 1), HttpStatus.SC_OK},
+                {getUser(INVALID_USERS, 1), HttpStatus.SC_NOT_FOUND}
         };
     }
 
