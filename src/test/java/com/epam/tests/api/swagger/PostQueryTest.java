@@ -1,7 +1,7 @@
 package com.epam.tests.api.swagger;
 
-import com.epam.data.request.Users;
 import com.epam.data.provider.DataProviderForTests;
+import com.epam.data.request.Users;
 import com.epam.data.response.ResponseBody;
 import com.epam.enums.StatusCode;
 import com.epam.tests.api.swagger.conditions.PostQueryConditions;
@@ -9,6 +9,7 @@ import com.epam.utils.JsonUtils;
 import com.google.gson.Gson;
 import com.jayway.jsonpath.JsonPath;
 import lombok.extern.slf4j.Slf4j;
+import org.testng.annotations.Factory;
 import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
 
@@ -22,9 +23,17 @@ import static java.lang.String.format;
 
 @Slf4j
 public class PostQueryTest extends PostQueryConditions {
+    private final Users users;
+    private final int statusCode;
 
-    @Test(dataProvider = "dataForPostTest", dataProviderClass = DataProviderForTests.class)
-    public void swaggerPostQueryTest(final Users users, final int statusCode) {
+    @Factory(dataProvider = "dataForPostTest", dataProviderClass = DataProviderForTests.class)
+    public PostQueryTest(Users users, int statusCode) {
+        this.users = users;
+        this.statusCode = statusCode;
+    }
+
+    @Test
+    public void swaggerPostQueryTest() {
         String requestBody;
         if (users == null) {
             requestBody = "{}";
