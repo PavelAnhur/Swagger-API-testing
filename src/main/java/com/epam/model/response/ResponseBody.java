@@ -1,4 +1,4 @@
-package com.epam.data.response;
+package com.epam.model.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -1,8 +1,8 @@
 package com.epam.tests.api.swagger;
 
-import com.epam.data.request.User;
+import com.epam.model.request.User;
 import com.epam.data.provider.DataProviderForTests;
-import com.epam.data.response.ResponseBody;
+import com.epam.model.response.ResponseBody;
 import com.epam.enums.StatusCode;
 import com.epam.tests.api.swagger.conditions.DeleteQueryConditions;
 import com.epam.utils.JsonUtils;
@@ -22,6 +22,7 @@ import static java.lang.String.format;
 
 @Slf4j
 public class DeleteQueryTest extends DeleteQueryConditions {
+    private final SoftAssert softAssert = new SoftAssert();
 
     @Test(dataProvider = "dataForDeleteTest", dataProviderClass = DataProviderForTests.class)
     public void swaggerDeleteQueryTest(final User user, final int statusCode) {
@@ -29,11 +30,10 @@ public class DeleteQueryTest extends DeleteQueryConditions {
         String userName = JsonPath.parse(userAsJson).read("$.username").toString();
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder(
-                URI.create(format("%s%s%s", getBaseUrl(), getQueryEndPoint(), userName)))
+                URI.create(format("%s%s%s", BASE_URL, QUERY_END_POINT, userName)))
                                       .DELETE()
                                       .build();
 
-        SoftAssert softAssert = new SoftAssert();
         try {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             ResponseBody responseBody = new Gson().fromJson(response.body(), ResponseBody.class);
@@ -43,10 +43,10 @@ public class DeleteQueryTest extends DeleteQueryConditions {
             } else if (response.statusCode() == StatusCode.NOT_FOUND_404.getValue()) {
                 softAssert.assertEquals(responseBody, null);
             } else {
-                log.warn(getQueryStatus());
+                log.warn(QUERY_STATUS);
             }
-            softAssert.assertEquals(response.statusCode(), statusCode, getInvalidStatusCodeMessage());
-            softAssert.assertAll(getInvalidResponseBodyMessage());
+            softAssert.assertEquals(response.statusCode(), statusCode, INVALID_STATUS_CODE_MESSAGE);
+            softAssert.assertAll(INVALID_RESPONSE_BODY_MESSAGE);
         } catch (IOException | InterruptedException e) {
             log.error(e.getMessage());
         }

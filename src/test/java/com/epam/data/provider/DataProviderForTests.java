@@ -1,7 +1,7 @@
 package com.epam.data.provider;
 
-import com.epam.data.request.User;
-import com.epam.data.request.Users;
+import com.epam.model.request.User;
+import com.epam.model.request.Users;
 import com.epam.enums.StatusCode;
 import org.testng.annotations.DataProvider;
 

@@ -1,8 +1,8 @@
 package com.epam.tests.api.swagger;
 
 import com.epam.data.provider.DataProviderForTests;
-import com.epam.data.request.User;
-import com.epam.data.response.ResponseBody;
+import com.epam.model.request.User;
+import com.epam.model.response.ResponseBody;
 import com.epam.enums.StatusCode;
 import com.epam.tests.api.swagger.conditions.GetQueryConditions;
 import com.google.gson.Gson;
@@ -20,6 +20,7 @@ import static java.lang.String.format;
 
 @Slf4j
 public class GetQueryTest extends GetQueryConditions {
+    private final SoftAssert softAssert = new SoftAssert();
 
     @Test(dataProvider = "dataForGetTest", dataProviderClass = DataProviderForTests.class)
     public void swaggerGetQueryTest(final User user, final int statusCode) {
@@ -27,11 +28,10 @@ public class GetQueryTest extends GetQueryConditions {
         log.info("Username: " + userName);
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder(
-                URI.create(format("%s%s%s", getBaseUrl(), getQueryEndPoint(), userName)))
+                URI.create(format("%s%s%s", BASE_URL, QUERY_END_POINT, userName)))
                                       .GET()
                                       .build();
 
-        SoftAssert softAssert = new SoftAssert();
         try {
             HttpResponse<String> response =
                     client.send(request, HttpResponse.BodyHandlers.ofString());
@@ -40,13 +40,13 @@ public class GetQueryTest extends GetQueryConditions {
                 softAssert.assertEquals(responseBodyUser, user);
             } else if (response.statusCode() == StatusCode.NOT_FOUND_404.getValue()) {
                 ResponseBody responseBody = new Gson().fromJson(response.body(), ResponseBody.class);
-                softAssert.assertEquals(responseBody.getCode(), getCodeFromResponseBody());
-                softAssert.assertEquals(responseBody.getMessage(), getMessageFromResponseBody());
+                softAssert.assertEquals(responseBody.getCode(), CODE_FROM_RESPONSE_BODY);
+                softAssert.assertEquals(responseBody.getMessage(), MESSAGE_FROM_RESPONSE_BODY);
             } else {
-                log.warn(getQueryStatus());
+                log.warn(QUERY_STATUS);
             }
-            softAssert.assertEquals(response.statusCode(), statusCode, getInvalidStatusCodeMessage());
-            softAssert.assertAll(getInvalidResponseBodyMessage());
+            softAssert.assertEquals(response.statusCode(), statusCode, INVALID_STATUS_CODE_MESSAGE);
+            softAssert.assertAll(INVALID_RESPONSE_BODY_MESSAGE);
         } catch (IOException | InterruptedException e) {
             log.error(e.getMessage());
         }

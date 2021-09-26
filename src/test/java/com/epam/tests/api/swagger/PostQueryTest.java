@@ -1,8 +1,8 @@
 package com.epam.tests.api.swagger;
 
 import com.epam.data.provider.DataProviderForTests;
-import com.epam.data.request.Users;
-import com.epam.data.response.ResponseBody;
+import com.epam.model.request.Users;
+import com.epam.model.response.ResponseBody;
 import com.epam.enums.StatusCode;
 import com.epam.tests.api.swagger.conditions.PostQueryConditions;
 import com.epam.utils.JsonUtils;
@@ -25,17 +25,19 @@ import static java.lang.String.format;
 public class PostQueryTest extends PostQueryConditions {
     private final Users users;
     private final int statusCode;
+    private final SoftAssert softAssert;
 
     @Factory(dataProvider = "dataForPostTest", dataProviderClass = DataProviderForTests.class)
     public PostQueryTest(Users users, int statusCode) {
         this.users = users;
         this.statusCode = statusCode;
+        this.softAssert = new SoftAssert();
     }
 
     @Test
     public void swaggerPostQueryTest() {
         String requestBody;
-        if (users == null) {
+        if (null == users) {
             requestBody = "{}";
         } else {
             String usersAsJson = JsonUtils.toJson(users);
@@ -45,27 +47,26 @@ public class PostQueryTest extends PostQueryConditions {
         try {
             HttpClient client = HttpClient.newHttpClient();
             HttpRequest request = HttpRequest.newBuilder()
-                                          .uri(URI.create(format("%s%s", getBaseUrl(), getQueryEndPoint())))
-                                          .header(getHeaderParamName(), getHeaderParamValue())
+                                          .uri(URI.create(format("%s%s", BASE_URL, QUERY_END_POINT)))
+                                          .header(HEADER_PARAM_NAME, HEADER_PARAM_VALUE)
                                           .POST(HttpRequest.BodyPublishers.ofString(requestBody))
                                           .build();
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-            SoftAssert softAssert = new SoftAssert();
             ResponseBody responseBody = new Gson().fromJson(response.body(), ResponseBody.class);
             int responseBodyCode = responseBody.getCode();
             String responseBodyMessage = responseBody.getMessage();
             if (response.statusCode() == StatusCode.OK_200.getValue()) {
-                softAssert.assertEquals(responseBodyMessage, getSuccessResponseMessage());
+                softAssert.assertEquals(responseBodyMessage, SUCCESS_RESPONSE_MESSAGE);
                 softAssert.assertEquals(responseBodyCode, StatusCode.OK_200.getValue());
             } else if (response.statusCode() == StatusCode.SERVER_ERROR_500.getValue()) {
-                softAssert.assertEquals(responseBodyMessage, getErrorResponseMessage());
+                softAssert.assertEquals(responseBodyMessage, ERROR_RESPONSE_MESSAGE);
                 softAssert.assertEquals(responseBodyCode, StatusCode.SERVER_ERROR_500.getValue());
             } else {
-                log.warn(getQueryStatus());
+                log.warn(QUERY_STATUS);
             }
-            softAssert.assertEquals(response.statusCode(), statusCode, getInvalidStatusCodeMessage());
-            softAssert.assertAll(getInvalidResponseBodyMessage());
+            softAssert.assertEquals(response.statusCode(), statusCode, INVALID_STATUS_CODE_MESSAGE);
+            softAssert.assertAll(INVALID_RESPONSE_BODY_MESSAGE);
         } catch (InterruptedException | IOException e) {
             log.error(e.getMessage());
         }
